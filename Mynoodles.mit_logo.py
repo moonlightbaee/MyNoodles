@@ -76,7 +76,7 @@ frame = tk.Frame(window, bg = "white", height = 40)
 frame.pack(fill = "x") #streckung
 
 # Logo
-icon_path = "/Users/moonlightbae/Documents/MyNoodles/Logo_rot.png" #path zum Logo
+icon_path = "Logo_rot.png" #path zum Logo
 icon_image = Image.open(icon_path)
 icon_image = icon_image.resize((64, 64))
 icon_photo = ImageTk.PhotoImage(icon_image) #Bild wird in passendes Format umgewandelt
@@ -143,12 +143,12 @@ for text, command in basis_buttons.items():
 
 
 # Bild mit Pillow laden
-image = Image.open("/Users/moonlightbae/Downloads/pngtree-noodles-food-noodles-dry-picture-image_13176534.png")
-photo = ImageTk.PhotoImage(image)
+'''image = Image.open("")
+photo = ImageTk.PhotoImage(image)'''
 
 # Button mit Text und Bild
-button = tk.Button(tab4, text="Klick mich", image=photo, compound="left")
-button.pack()
+'''button = tk.Button(tab4, text="Klick mich", image=photo, compound="left")
+button.pack()'''
 
 
 # Protein
