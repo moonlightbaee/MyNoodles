@@ -9,6 +9,7 @@ Created on Thu Dec  5 21:05:31 2024
 import tkinter as tk
 from tkinter import ttk
 
+# Willkommen zum Test1
 # Bilder hinzufügen
 from PIL import Image, ImageTk
 
@@ -23,11 +24,12 @@ def show_tab_content(tab_num):
         
         
     # gewählte Tabs anzeigen
+    
 
     if tab_num == 1:
         tab1.pack(fill="both", expand=True)  #fill=both: Höhe und Breite(ganzer Platz) werden gefüllt
     elif tab_num == 2:
-        tab2.pack(fill="both", expand=True)  #expand=True: wenn Fenster vergrößert wird, wird Tab auch vergrößert
+        tab2.pack(fill="both",  expand=True)  #expand=True: wenn Fenster vergrößert wird, wird Tab auch vergrößert
     elif tab_num == 3:                       #bei False: Tab bleibt unverändert und passt sich nicht an
         tab3.pack(fill="both", expand=True) 
     elif tab_num == 4:
