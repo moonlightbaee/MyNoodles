@@ -218,5 +218,5 @@ tab4_button = tk.Button(category_frame, text = "Brühe", command = lambda: show_
 tab4_button.pack(fill ="x", padx=5, pady=5) 
 
 
-# Anwendung starten
+
 window.mainloop()
