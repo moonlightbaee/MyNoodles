@@ -6,8 +6,17 @@ Created on Thu Dec  5 21:05:31 2024
 @author: moonlightbae
 """
 
-import tkinter as tk
-from tkinter import ttk
+import platform 
+plt = platform.system()
+
+if plt == "Windows":
+    import tkinter as tk
+elif plt == "Darwin":
+    import tkinter as tk
+    from tkmacosx import Button
+else:
+    print("Unidentified system")
+
 
 # Willkommen zum Test1
 # Bilder hinzufügen
@@ -24,17 +33,15 @@ def show_tab_content(tab_num):
         
         
     # gewählte Tabs anzeigen
-    
 
     if tab_num == 1:
         tab1.pack(fill="both", expand=True)  #fill=both: Höhe und Breite(ganzer Platz) werden gefüllt
     elif tab_num == 2:
-        tab2.pack(fill="both",  expand=True)  #expand=True: wenn Fenster vergrößert wird, wird Tab auch vergrößert
+        tab2.pack(fill="both", expand=True)  #expand=True: wenn Fenster vergrößert wird, wird Tab auch vergrößert
     elif tab_num == 3:                       #bei False: Tab bleibt unverändert und passt sich nicht an
         tab3.pack(fill="both", expand=True) 
     elif tab_num == 4:
         tab4.pack(fill="both", expand = True)
-
 
 
 
@@ -82,7 +89,7 @@ icon_image = icon_image.resize((64, 64))
 icon_photo = ImageTk.PhotoImage(icon_image) #Bild wird in passendes Format umgewandelt
 
 
-icon_label = tk.Label(frame, image = icon_photo, bd = 0, highlightthickness=0) #Label im Frame, damit Bild angezeigt werden kann
+icon_label = tk.Label(frame, image = icon_photo, bd = 0, border = False) #Label im Frame, damit Bild angezeigt werden kann
 icon_label.pack(side = "top", padx = 10, pady = 5) #x,y: Abstand zum Rahmen
 
 
@@ -203,18 +210,17 @@ for text, command in flavour_buttons.items():
 
 
 # Sidebar Tabs untereinander
-tab1_button = tk.Button(category_frame, text="Basis", command=lambda: show_tab_content(1), width=8, height=3)
-tab1_button.config(bg="blue")  # Hex-Farbcode
+tab1_button = Button(category_frame, text="Basis", bg= "blue", borderless=1, command=lambda: show_tab_content(1), width=80, height=20)
 tab1_button.pack(fill="x", padx=5, pady=5)                          #command: welche Fkt soll ausgeführt werden
                   #padx, pady: Abstand oben unten                   #lambda:  Funktion, die show_tab_content(x) aufruft(bei Klick)
                                    
-tab2_button = tk.Button(category_frame, text="Protein", bg = "beige", command=lambda: show_tab_content(2), width=8, height=3)
+tab2_button = Button(category_frame, text="Protein", command=lambda: show_tab_content(2), width=8, height=3)
 tab2_button.pack(fill="x", padx=5, pady=5)
 
-tab3_button = tk.Button(category_frame, text="Gemüse", command=lambda: show_tab_content(3), width=8, height=3)
+tab3_button = Button(category_frame, text="Gemüse", command=lambda: show_tab_content(3), width=8, height=3)
 tab3_button.pack(fill="x", padx=5, pady=5)
 
-tab4_button = tk.Button(category_frame, text = "Brühe", command = lambda: show_tab_content(4), width=8, height=3)
+tab4_button = Button(category_frame, text = "Brühe", command = lambda: show_tab_content(4), width=8, height=3)
 tab4_button.pack(fill ="x", padx=5, pady=5) 
 
 
