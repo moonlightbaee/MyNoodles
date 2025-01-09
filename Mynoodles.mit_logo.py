@@ -1,228 +1,241 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Dec  5 21:05:31 2024
-
-@author: moonlightbae
-"""
-
-import platform 
-plt = platform.system()
-
-if plt == "Windows":
-    import tkinter as tk
-elif plt == "Darwin":
-    import tkinter as tk
-    from tkmacosx import Button
-else:
-    print("Unidentified system")
-
-
-# Willkommen zum Test1
-# Bilder hinzufügen
+# Tkinter = Library, um Fenster zu erzeugen
 from PIL import Image, ImageTk
+import tkinter as tk
+from tkinter import ttk
+import pandas as pd
 
-# Funktion, die beim Drücken eines Buttons ausgeführt wird
-def show_tab_content(tab_num):
-
-
-    # Inhalt der Tabs werden ausgeblendet
-    for tab in [tab1, tab2, tab3, tab4]:
-        tab.pack_forget()
-        
-        
-        
-    # gewählte Tabs anzeigen
-
-    if tab_num == 1:
-        tab1.pack(fill="both", expand=True)  #fill=both: Höhe und Breite(ganzer Platz) werden gefüllt
-    elif tab_num == 2:
-        tab2.pack(fill="both", expand=True)  #expand=True: wenn Fenster vergrößert wird, wird Tab auch vergrößert
-    elif tab_num == 3:                       #bei False: Tab bleibt unverändert und passt sich nicht an
-        tab3.pack(fill="both", expand=True) 
-    elif tab_num == 4:
-        tab4.pack(fill="both", expand = True)
-
-
-
-# Liste, die die ausgewählten Produkte speichert
-selected_items = []
-
-# add to List
-def add_to_list(item):
-    # Item zur Liste hinzufügen, falls es noch nicht vorhanden ist
-    if item not in selected_items:
-        selected_items.append(item)
-    update_display()
-
-# ausgewählte Items im rechten Frame 
-def update_display():
-    # Lösche den aktuellen Inhalt des rechten Frames
-    for widget in cup_frame.winfo_children():
-        if widget is not cup_label: # Label bleibt im Frame
-            widget.destroy()
-            
-
-    # Zeige jedes ausgewählte Item im rechten Frame an
-    if selected_items:
-        for item in selected_items:
-            item_label = tk.Label(cup_frame, text=item)
-            item_label.pack(pady=5)
-
-
-
-
-# Hauptfenster
+# Globale Variablen
 window = tk.Tk()
-window.title("MyNoodles")
-window.geometry("1500x900")
-window.configure(bg = "darkorange") # Hintergrund
+selected_items = []
+tabs = {}
 
-# Frame oben, wo Logo ist
-frame = tk.Frame(window, bg = "white", height = 40)
-frame.pack(fill = "x") #streckung
+# Hauptfenster einrichten
+def initialize_window():
+    global window
+    window.title("MyNoodles")
 
-# Logo
-icon_path = "Logo_rot.png" #path zum Logo
-icon_image = Image.open(icon_path)
-icon_image = icon_image.resize((64, 64))
-icon_photo = ImageTk.PhotoImage(icon_image) #Bild wird in passendes Format umgewandelt
+    # Bildschirmgröße abrufen
+    screen_width = window.winfo_screenwidth()
+    screen_height = window.winfo_screenheight()
 
+    # Fenstergröße auf die Bildschirmgröße setzen
+    window.geometry(f"{screen_width}x{screen_height}")
 
-icon_label = tk.Label(frame, image = icon_photo, bd = 0, border = False) #Label im Frame, damit Bild angezeigt werden kann
-icon_label.pack(side = "top", padx = 10, pady = 5) #x,y: Abstand zum Rahmen
+    window.configure(bg="darkorange")
+    create_header()
+    create_sidebars()
+    create_tabs()
+    create_sidebar_buttons()
 
+    window.mainloop()
 
-window.iconphoto(True, icon_photo) # windows: Logo in Titelleiste #macOS: Im Dock/ Icon
+# Header mit Logo
+def create_header():
+    frame = tk.Frame(window, bg="darkred", height=50)
+    frame.pack(fill="x")
 
+    icon_path = "Logo_rot.png"
+    
+    # Bild öffnen und die Größe anpassen
+    icon_image = Image.open(icon_path)
+    icon_image = icon_image.resize((80, 80))
+    
+    # Bild laden
+    icon_photo = ImageTk.PhotoImage(icon_image)
 
+    # Label mit dem Bild erstellen
+    icon_label = tk.Label(frame, image=icon_photo, bd=0, border=False)
+    icon_label.pack(side="top", padx=10, pady=15)
 
-# Sidebar links
-category_frame = tk.Frame(window, bg = "darkorange")
-category_label = tk.Label(category_frame, text = "<3", bd = 0, highlightthickness=0)
-category_label.pack()
-category_frame.pack(side="left", fill="y", padx=10)
+    # Fenster-Icon setzen
+    window.iconphoto(True, icon_photo)
+    
+    # Bild speichern (Ohne diese Zeile kommt es zu Anzeigefehlern)
+    icon_label.image = icon_photo 
 
+# Seitenleisten einrichten
+def create_sidebars():
+    global category_frame, cup_frame
 
-# sidebar rechts (cup)
-cup_frame = tk.Frame(window, bg = "firebrick")
-cup_label = tk.Label(cup_frame, text = "Dein Cup", bd = 0, highlightthickness=0)
-cup_label.pack()
-cup_frame.pack(side="right", fill="both", expand = True)
+    # Linke Sidebar
+    category_frame = tk.Frame(window, bg="darkorange", width=460)  # Breite 
+    category_frame.pack(side="left", fill="y", padx=10)
+    category_frame.pack_propagate(False)  # Verhindert, dass sich die Größe automatisch an den Inhalt anpasst
 
-# cup vorschau
-cup= tk.Frame(window)
-# Foto
+    #Pandabild einfügen
+    panda_image = ImageTk.PhotoImage(Image.open(r"c:\Users\sarah\Desktop\MyNoodles-main\panda.png").resize((190, 210)))
+    panda_label = tk.Label(category_frame, image=panda_image, bg="darkorange")
+    panda_label.place(relwidth=1, relheight=1.4)
 
-"""
-#Bild
-
-new_path = "path einfügen"
-image = Image.open(new_path)
-image = image.resize((100, 100))
-photo = ImageTk.PhotoImage(image)
-
-import os
-new_path = os.path.join(os.getcwd(), "path einfügen")
-image.save(new_path, format="JPEG")
-
-
-label = tk.Label(window, image = photo)
-label_image = photo
-label_image.image = photo
-label.pack(pady=20)"""
-
-# Basis
-tab1 = tk.Frame(window, bg ="darkorange")
-
-
-label = tk.Label(text = "Bitte wähle", bd = 0, highlightthickness=0)
-label.pack()
-
-basis_buttons = {"Weizennudeln": lambda: add_to_list("Weizennudeln"),
-                 "Reisbandnudeln": lambda: add_to_list("Reisbandnudeln"),
-                 "Glasnudeln": lambda: add_to_list("Glasnudeln"),
-                 "Vollkornnudeln": lambda: add_to_list("Vollkornnudeln"),
-                 "Glutenfreie Nudeln": lambda: add_to_list("Glutenfreie Nudeln")}
-
-for text, command in basis_buttons.items():
-    tk.Button(tab1, text = text, width = 90, height = 8, command = command).pack(fill = "x", padx = 5, pady = 5)
-
-
-# Bild mit Pillow laden
-'''image = Image.open("")
-photo = ImageTk.PhotoImage(image)'''
-
-# Button mit Text und Bild
-'''button = tk.Button(tab4, text="Klick mich", image=photo, compound="left")
-button.pack()'''
-
-
-# Protein
-tab2 = tk.Frame(window, bg="darkorange")
-
-protein_buttons = {"Hühnerfleisch": lambda: add_to_list("Huhn"),
-                   "Entenfleisch": lambda: add_to_list("Entenfleisch"),
-                   "Rindfleisch": lambda: add_to_list("Rindfleisch"),
-                   "Schweinefleisch": lambda: add_to_list("Schweinefleisch"),
-                   "Schrimps": lambda: add_to_list("Schrimps"),
-                   "Fish Cake": lambda: add_to_list("Fish Cake"),
-                   "Surimi": lambda: add_to_list("Surimi"),
-                   "Tintenfisch": lambda: add_to_list("Tintenfisch"),
-                   "Tofu": lambda: add_to_list("Tofu")}
-
-for text, command in protein_buttons.items():
-    tk.Button(tab2, text = text, width = 90, height = 5, command = command).pack(fill = "x", padx = 5, pady = 5)
+    #Pandabild speichern
+    panda_label.image = panda_image
     
 
-# Gemüse
-tab3 = tk.Frame(window, bg ="darkorange")
+    # Rechte Sidebar
+    cup_frame = tk.Frame(window, bg="darkorange", width=450)
+    cup_frame.pack(side="right", fill="both", expand=True)
 
-veggie_buttons = {"Mais": lambda: add_to_list("Mais"),
-                  "Lauch": lambda: add_to_list("Lauch"),
-                  "Karotten": lambda: add_to_list("Karotten"),
-                  "Shitake Pilze": lambda: add_to_list("Shitake Pilze"),
-                  "Morcheln": lambda: add_to_list("Morcheln"),
-                  "Kohl": lambda : add_to_list("Kohl")}
+    # Cup Hintergrundbild einfügen
+    background_image = ImageTk.PhotoImage(Image.open(r"c:\Users\sarah\Desktop\MyNoodles-main\cup.png").resize((350, 450)))  
+    background_label = tk.Label(cup_frame, image=background_image, bg="darkorange")
+    background_label.place(relwidth=1, relheight=1.3)
+    
+    # Bild speichern (Ohne diese Zeile kommt es zu Anzeigefehlern)
+    background_label.image = background_image
 
-for text, command in veggie_buttons.items():
-    tk.Button(tab3, text = text, width = 90, height = 6, command = command).pack(fill = "x", padx = 5, pady = 5)
+# Tabs einrichten
+def create_tabs():
+    global tabs, notebook
+    
+    # Stil erstellen, um die Tab-Überschriften zu verstecken
+    style = ttk.Style()
+    style.configure("TNotebook", tabposition="none")  # Tab-Überschriften verstecken
+
+    # Das Notebook-Widget erstellen
+    notebook = ttk.Notebook(window, style="TNotebook")
+
+    # Basis Tab
+    tabs[1] = create_tab(
+        {"Weizennudeln": "Weizennudeln", "Reisbandnudeln": "Reisbandnudeln",
+         "Glasnudeln": "Glasnudeln", "Vollkornnudeln": "Vollkornnudeln"}, 5)
+
+    # Protein Tab
+    tabs[2] = create_tab(
+        {"Hähnchen": "Hähnchen",
+         "Rind": "Rind", "Schwein": "Schwein", "Pute": "Pute",
+         "Shrimps": "Shrimps", "Fishcake": "Fishcake", "Lachs": "Lachs",
+         "Tofu": "Tofu"}, 5)
+
+    # Gemüse Tab
+    tabs[3] = create_tab(
+        {"Mais": "Mais", "Lauchzwiebeln": "Lauchzwiebeln", "Karotten": "Karotten",
+         "Shitake": "Shitake", "Morcheln": "Morcheln", "Algen (Nori)": "Algen (Nori)", 
+         "Kohl": "Kohl", "Grüne Bohnen": "Grüne Bohnen"}, 5)
+
+    # Brühe Tab
+    tabs[4] = create_tab(
+        {"Misobrühe": "Misobrühe", "Tom Yum": "Tom Yum", "Gemüsebrühe": "Gemüsebrühe", 
+         "Pho Brühe": "Pho Brühe", "Thai Curry": "Thai Curry", "Süß-Sauer": "Süß-Sauer", 
+         "Sesambrühe": "Sesambrühe"}, 5)
+
+    # Tabs zum Notebook hinzufügen 
+    for tab_id, tab_content in tabs.items():
+        notebook.add(tab_content)  
+    
+    # Das Notebook in das Fenster einfügen 
+    notebook.pack(fill="both", expand=True)
+
+# Generische Tab-Erstellung
+def create_tab(items, height):
+    tab = tk.Frame(window, bg="darkorange")
+    
+    # Canvas für das Scrollen erstellen
+    canvas = tk.Canvas(tab, width=800, bg="darkred")
+    canvas.pack(side=tk.LEFT, fill="both", expand=True)
+    
+    # Vertikalen Scrollbalken für das Canvas erstellen
+    scrollbar = ttk.Scrollbar(tab, orient="vertical", command=canvas.yview)
+    scrollbar.pack(side=tk.RIGHT, fill="y")
+    
+    canvas.configure(yscrollcommand=scrollbar.set)
+    
+    # Einen Frame innerhalb des Canvas erstellen, um die Buttons zu halten
+    button_frame = tk.Frame(canvas, bg="darkred")
+    canvas.create_window((0, 0), window=button_frame, anchor="nw")
+
+    # Buttons zum Frame hinzufügen
+    for text, value in items.items():
+        tk.Button(button_frame, font=("Verdana", 11, "bold"), bg="white", text=text, width=80, height=height, command=lambda v=value: add_to_list(v)).pack(fill="x", padx=5, pady=5)
+
+    # Die Scrollregion des Canvas aktualisieren
+    button_frame.update_idletasks()  # Nach dem Platzieren aller Widgets aktualisieren
+    canvas.config(scrollregion=canvas.bbox("all"))
+    
+    return tab
+
+# Sidebar-Buttons erstellen
+def create_sidebar_buttons():
+    tk.Button(category_frame, text="Basis",font=("Verdana", 12, "bold"), bg="white", command=lambda: show_tab_content(1), width=8, height=4).pack(fill="x", padx=5, pady=5)
+    tk.Button(category_frame, text="Protein", font=("Verdana", 12, "bold"), bg="white", command=lambda: show_tab_content(2), width=8, height=4).pack(fill="x", padx=5, pady=5)
+    tk.Button(category_frame, text="Gemüse", font=("Verdana", 12, "bold"), bg="white", command=lambda: show_tab_content(3), width=8, height=4).pack(fill="x", padx=5, pady=5)
+    tk.Button(category_frame, text="Brühe", font=("Verdana", 12, "bold"), bg="white", command=lambda: show_tab_content(4), width=8, height=4).pack(fill="x", padx=5, pady=5)
+    tk.Button(category_frame, text="Reset", font=("Verdana", 12, "bold"), bg="white", command=reset_selected_items, width=8, height=4).pack(fill="x", padx=5, pady=5)
+
+#Liste der ausgewählten items zurücksetzten
+def reset_selected_items():
+    global selected_items
+    selected_items.clear()
+    update_display()
+
+# Den Inhalt des ausgewählten Tabs anzeigen
+def show_tab_content(tab_num):
+    global current_tab
+    current_tab = tab_num
+    notebook.select(tabs[tab_num])
+
+# Ein Element zur Liste hinzufügen
+def add_to_list(item):
+    global selected_items, current_tab
+
+    # Überprüfe, wie viele Items bereits für den aktuellen Tab ausgewählt wurden
+    current_tab_items = [i for i in selected_items if i in tab_items[current_tab]]
+
+    # Begrenzung prüfen
+    if len(current_tab_items) >= max_selections_per_tab[current_tab]:
+        print(f"Maximale Auswahl von {max_selections_per_tab[current_tab]} für diesen Tab erreicht.")
+        return
+
+    # Item hinzufügen, falls es noch nicht ausgewählt ist
+    if item not in selected_items:
+        selected_items.append(item)
+
+    # Anzeige aktualisieren
+    update_display()
+# Die Anzeige der ausgewählten Elemente aktualisieren
+def update_display():
+    for widget in cup_frame.winfo_children():
+        if widget is not cup_frame.winfo_children()[0]:
+            widget.destroy()
+
+    total_price = 0
+    total_kcal = 0
+
+    for item in selected_items:
+        item_data = ingredients_data.loc[item]
+        price = item_data['Preis angebotene Menge']  # Annahme: Spalte heißt 'Preis'
+        kcal = item_data['Energie']  # Annahme: Spalte heißt 'Kalorien'
+
+        total_price += price
+        total_kcal += kcal
+
+        item_label = tk.Label(cup_frame, text=f"{item} - Preis: {price}€, Kalorien: {kcal}kcal", font=("Verdana", 12))
+        item_label.pack(pady=5)
+
+    summary_label = tk.Label(cup_frame, text=f"Gesamt: Preis: {round(total_price,2)}€, Kalorien: {total_kcal}kcal", font=("Verdana", 15, "bold"))
+    summary_label.pack(pady=30, side="bottom")
 
 
-# Flavour
-tab4 = tk.Frame(window, bg="darkorange")
+#Excel Daten laden
+ingredients_data = pd.read_excel("c:/Users/sarah/Desktop/MyNoodles-main/Datensatz.python.xlsx", header=0)
+ingredients_data.set_index("Zutat", inplace=True)
 
-flavour_buttons = {"Miso": lambda: add_to_list("Miso"),
-                   "Tom Yum": lambda: add_to_list("Tom Yum")}
+#Maximale Auswahl pro Tab
+max_selections_per_tab = {
+    1: 1,  # Maximal 1 Auswahlmöglichkeiten im Basis-Tab
+    2: 1,  # Maximal 1 Auswahlmöglichkeiten im Protein-Tab
+    3: 2,  # Maximal 4 Auswahlmöglichkeiten im Gemüse-Tab
+    4: 1   # Maximal 1 Auswahlmöglichkeit im Brühe-Tab
+}
 
-for text, command in flavour_buttons.items():
-    tk.Button(tab4, text = text, width = 90, height = 8, command = command).pack(fill = "x", padx = 5, pady = 5)
+#Items dem Tab zuordnen 
+tab_items = {
+    1: ["Weizennudeln", "Reisbandnudeln", "Glasnudeln", "Vollkornnudeln"],
+    2: ["Hähnchen", "Rind", "Schwein", "Shrimps", "Fishcake", "Tofu", "Pute", "Lachs"],
+    3: ["Mais", "Lauchzwiebeln", "Karotten", "Shitake", "Morcheln", "Kohl", "Grüne Bohnen", "Algen (Nori)"],
+    4: ["Misobrühe", "Tom Yum", "Gemüsebrühe", "Pho Brühe", "Thai Curry", "Süß-Sauer", "Sesambrühe"]
+}
+# Aktueller Tab 
+current_tab = 1  
 
-
-
-
-
-
-# Kalorien- und Preisberechnung (Peer)
-# Nährwerte (Linus)
-# Preise (Linus) 
- 
-
-
-# Sidebar Tabs untereinander
-tab1_button = Button(category_frame, text="Basis", bg= "blue", borderless=1, command=lambda: show_tab_content(1), width=80, height=20)
-tab1_button.pack(fill="x", padx=5, pady=5)                          #command: welche Fkt soll ausgeführt werden
-                  #padx, pady: Abstand oben unten                   #lambda:  Funktion, die show_tab_content(x) aufruft(bei Klick)
-                                   
-tab2_button = Button(category_frame, text="Protein", command=lambda: show_tab_content(2), width=8, height=3)
-tab2_button.pack(fill="x", padx=5, pady=5)
-
-tab3_button = Button(category_frame, text="Gemüse", command=lambda: show_tab_content(3), width=8, height=3)
-tab3_button.pack(fill="x", padx=5, pady=5)
-
-tab4_button = Button(category_frame, text = "Brühe", command = lambda: show_tab_content(4), width=8, height=3)
-tab4_button.pack(fill ="x", padx=5, pady=5) 
-
-
-
-window.mainloop()
+#Anwendung starten
+initialize_window()
