@@ -1,1 +1,1 @@
-![MyNoodles Logo](assets/images/Logo_rot.png)
+![MyNoodles Logo](Logo_rot.png)
