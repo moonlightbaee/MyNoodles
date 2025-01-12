@@ -63,7 +63,7 @@ def create_sidebars():
     category_frame.pack_propagate(False)  # Verhindert, dass sich die Größe automatisch an den Inhalt anpasst
 
     #Pandabild einfügen
-    panda_image = ImageTk.PhotoImage(Image.open(r"c:\Users\sarah\Desktop\MyNoodles-main\panda.png").resize((190, 210)))
+    panda_image = ImageTk.PhotoImage(Image.open("panda.png").resize((190, 210)))
     panda_label = tk.Label(category_frame, image=panda_image, bg="darkorange")
     panda_label.place(relwidth=1, relheight=1.4)
 
@@ -76,7 +76,7 @@ def create_sidebars():
     cup_frame.pack(side="right", fill="both", expand=True)
 
     # Cup Hintergrundbild einfügen
-    background_image = ImageTk.PhotoImage(Image.open(r"c:\Users\sarah\Desktop\MyNoodles-main\cup.png").resize((350, 450)))  
+    background_image = ImageTk.PhotoImage(Image.open("MyCup.png").resize((700, 450)))  
     background_label = tk.Label(cup_frame, image=background_image, bg="darkorange")
     background_label.place(relwidth=1, relheight=1.3)
     
@@ -208,7 +208,7 @@ def update_display():
         total_price += price
         total_kcal += kcal
 
-        item_label = tk.Label(cup_frame, text=f"{item} - Preis: {price}€, Kalorien: {kcal}kcal", font=("Verdana", 12))
+        item_label = tk.Label(cup_frame, text=f"{item} - Preis: {round(price,2)}€, Kalorien: {round(kcal,2)}kcal", font=("Verdana", 12))
         item_label.pack(pady=5)
 
     summary_label = tk.Label(cup_frame, text=f"Gesamt: Preis: {round(total_price,2)}€, Kalorien: {total_kcal}kcal", font=("Verdana", 15, "bold"))
@@ -216,7 +216,7 @@ def update_display():
 
 
 #Excel Daten laden
-ingredients_data = pd.read_excel("c:/Users/sarah/Desktop/MyNoodles-main/Datensatz.python.xlsx", header=0)
+ingredients_data = pd.read_excel("Datensatz.xlsx", header=0)
 ingredients_data.set_index("Zutat", inplace=True)
 
 #Maximale Auswahl pro Tab
